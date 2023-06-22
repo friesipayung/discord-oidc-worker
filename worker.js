@@ -155,4 +155,50 @@ app.get('/jwks.json', async (c) => {
 	})
 })
 
+app.get('/.well-known/openid-configuration', async (c) => {
+	return c.json({
+		"issuer": "https://discord-oidc.friendly-615.workers.dev",
+		"authorization_endpoint": "https://discord-oidc.friendly-615.workers.dev/authorize/guilds",
+		// "device_authorization_endpoint": "https://oauth2.googleapis.com/device/code",
+		"token_endpoint": "https://discord-oidc.friendly-615.workers.dev/token",
+		// "userinfo_endpoint": "https://openidconnect.googleapis.com/v1/userinfo",
+		// "revocation_endpoint": "https://oauth2.googleapis.com/revoke",
+		"jwks_uri": "https://discord-oidc.friendly-615.workers.dev/jwks.json",
+		"response_types_supported": [
+			"code"
+		],
+		"subject_types_supported": [
+			"public"
+		],
+		"id_token_signing_alg_values_supported": [
+			"RS256"
+		],
+		"scopes_supported": [
+			"identify",
+			"email",
+			"guilds"
+		],
+		"token_endpoint_auth_methods_supported": [
+			"client_secret_post",
+			"client_secret_basic"
+		],
+		"claims_supported": [
+			"id",
+			"email",
+			"username",
+			"guilds",
+			"preferred_username",
+			"avatar"
+		],
+		"code_challenge_methods_supported": [
+			"plain",
+			"S256"
+		],
+		"grant_types_supported": [
+			"authorization_code",
+			"refresh_token"
+		]
+	})
+})
+
 export default app
