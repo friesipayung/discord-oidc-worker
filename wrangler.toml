@@ -3,5 +3,5 @@ main = "worker.js"
 compatibility_date = "2022-12-24"
 
 kv_namespaces = [
-  { binding = "KV", id = "539705c8c2bc4c3fb7ddfbe21c60e9cb", preview_id = "123" }
+  { binding = "KV", id = "1b9eb8b13d6a41aaaac1e17f844c0123", preview_id = "123" }
 ]
