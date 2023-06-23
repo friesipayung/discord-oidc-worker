@@ -157,13 +157,13 @@ app.get('/jwks.json', async (c) => {
 
 app.get('/.well-known/openid-configuration', async (c) => {
 	return c.json({
-		"issuer": "https://discord-oidc.friendly-615.workers.dev",
-		"authorization_endpoint": "https://discord-oidc.friendly-615.workers.dev/authorize/guilds",
+		"issuer": "https://discord-oidc.developer-cc3.workers.dev",
+		"authorization_endpoint": "https://discord-oidc.developer-cc3.workers.dev/authorize/guilds",
 		// "device_authorization_endpoint": "https://oauth2.googleapis.com/device/code",
-		"token_endpoint": "https://discord-oidc.friendly-615.workers.dev/token",
+		"token_endpoint": "https://discord-oidc.developer-cc3.workers.dev/token",
 		// "userinfo_endpoint": "https://openidconnect.googleapis.com/v1/userinfo",
 		// "revocation_endpoint": "https://oauth2.googleapis.com/revoke",
-		"jwks_uri": "https://discord-oidc.friendly-615.workers.dev/jwks.json",
+		"jwks_uri": "https://discord-oidc.developer-cc3.workers.dev/jwks.json",
 		"response_types_supported": [
 			"code"
 		],
