@@ -123,17 +123,24 @@ app.post('/token', async (c) => {
         ))
     }
 
-    const idToken = await new jose.SignJWT({
+    let iat = Math.floor(Date.now() / 1000)
+
+    let claim = {
         iss: 'https://discord-oidc.developer-cc3.workers.dev',
         aud: config.clientId,
-        preferred_username: `${userInfo['username']}#${userInfo['discriminator']}`,
+        preferred_username: `${userInfo['username']}`,
         ...userInfo,
         ...roleClaims,
         email: userInfo['email'],
+        email_verified: userInfo['verified'],
+        name: `${userInfo['global_name']}`,
+        iat: iat,
         guilds: servers,
         sub: userInfo['id'],
         picture: `https://cdn.discordapp.com/avatars/${userInfo['id']}/${userInfo['avatar']}.png`
-    })
+    }
+
+    const idToken = await new jose.SignJWT(claim)
         .setProtectedHeader({alg: 'RS256'})
         .setExpirationTime('1h')
         .setAudience(config.clientId)
@@ -169,22 +176,24 @@ app.get('/userinfo', async (c) => {
     // TODO: check if user is in guilds
     let servers = []
 
-    const idToken = await new jose.SignJWT({
+
+    let iat = Math.floor(Date.now() / 1000)
+
+    let claim = {
         iss: 'https://discord-oidc.developer-cc3.workers.dev',
         aud: config.clientId,
-        preferred_username: `${userInfo['username']}#${userInfo['discriminator']}`,
+        preferred_username: `${userInfo['username']}`,
         ...userInfo,
         email: userInfo['email'],
+        email_verified: userInfo['verified'],
+        name: `${userInfo['global_name']}`,
+        iat: iat,
         guilds: servers,
-        sub: `${userInfo['id']}`,
+        sub: userInfo['id'],
         picture: `https://cdn.discordapp.com/avatars/${userInfo['id']}/${userInfo['avatar']}.png`
-    })
-        .setProtectedHeader({alg: 'RS256'})
-        .setExpirationTime('1h')
-        .setAudience(config.clientId)
-        .sign((await loadOrGenerateKeyPair(c.env.KV)).privateKey)
+    }
 
-    return c.json(idToken)
+    return c.json(claim)
 
 })
 
@@ -221,16 +230,25 @@ app.get('/.well-known/openid-configuration', async (c) => {
         "id_token_signing_alg_values_supported": [
             "RS256"
         ],
+        "userinfo_signing_alg_values_supported": [
+            "none"
+        ],
+        "request_object_signing_alg_values_supported": [
+            "none"
+        ],
         "scopes_supported": [
             "identify",
             "email",
             "guilds"
         ],
         "token_endpoint_auth_methods_supported": [
-            "client_secret_post",
-            "client_secret_basic",
-            "private_key_jwt"
+            // "client_secret_post",
+            // "client_secret_basic",
+            // "private_key_jwt"
+            'client_secret_basic',
+            'private_key_jwt'
         ],
+        "token_endpoint_auth_signing_alg_values_supported": ['RS256'],
         "claims_supported": [
             "id",
             "email",
@@ -240,14 +258,19 @@ app.get('/.well-known/openid-configuration', async (c) => {
             "avatar",
             "iss",
             "aud",
-            "sub"
+            "sub",
+            "iat"
         ],
         "code_challenge_methods_supported": [
             "plain",
             "S256"
         ],
         "grant_types_supported": [
-            "none"
+            // "none",
+            "authorization_code",
+            "refresh_token",
+            // "urn:ietf:params:oauth:grant-type:device_code",
+            // "urn:ietf:params:oauth:grant-type:jwt-bearer"
         ],
         "display_values_supported": [
             "page",
