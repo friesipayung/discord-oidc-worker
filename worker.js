@@ -227,11 +227,11 @@ app.get('/jwks.json', async (c) => {
 
 app.get('/.well-known/openid-configuration', async (c) => {
     return c.json({
-        "issuer": "https://discord-oidc.developer-cc3.workers.dev",
-        "authorization_endpoint": "https://discord-oidc.developer-cc3.workers.dev/authorize/guilds",
-        "token_endpoint": "https://discord-oidc.developer-cc3.workers.dev/token",
-        "userinfo_endpoint": "https://discord-oidc.developer-cc3.workers.dev/userinfo",
-        "jwks_uri": "https://discord-oidc.developer-cc3.workers.dev/jwks.json",
+        "issuer": config.issuerURL,
+        "authorization_endpoint": config.issuerURL + "/authorize/guilds",
+        "token_endpoint": config.issuerURL + "/token",
+        "userinfo_endpoint": config.issuerURL + "/userinfo",
+        "jwks_uri": config.issuerURL + "/jwks.json",
         "response_types_supported": [
             "code",
             "code id_token",
