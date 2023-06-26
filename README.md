@@ -1,7 +1,7 @@
 # Discord OIDC Worker for Firebase Auth
 
 This is a Cloudflare Worker that implements
-the [Discord OIDC](https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes) flow for Firebase
+the [Discord OAuth2](https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes) flow for Firebase
 Auth.
 Add `.well-known/openid-configuration` to your domain and point it to this worker.
 
