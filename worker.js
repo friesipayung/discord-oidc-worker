@@ -123,6 +123,12 @@ app.post('/token', async (c) => {
         ))
     }
 
+    let email_verified = userInfo['verified']
+    if (email_verified === false) {
+        return new Response("Email not verified yet.", {status: 400})
+    }
+
+
     let iat = Math.floor(Date.now() / 1000)
 
     let claim = {
@@ -132,7 +138,7 @@ app.post('/token', async (c) => {
         ...userInfo,
         ...roleClaims,
         email: userInfo['email'],
-        email_verified: userInfo['verified'],
+        email_verified: email_verified,
         name: `${userInfo['global_name']}`,
         iat: iat,
         guilds: servers,
@@ -176,6 +182,18 @@ app.get('/userinfo', async (c) => {
     // TODO: check if user is in guilds
     let servers = []
 
+    const serverResp = await fetch('https://discord.com/api/users/@me/guilds', {
+        headers: {
+            'Authorization': 'Bearer ' + r['access_token']
+        }
+    })
+
+    if (serverResp.status === 200) {
+        const serverJson = await serverResp.json()
+        servers = serverJson.map(item => {
+            return item['id']
+        })
+    }
 
     let iat = Math.floor(Date.now() / 1000)
 
@@ -212,11 +230,8 @@ app.get('/.well-known/openid-configuration', async (c) => {
     return c.json({
         "issuer": "https://discord-oidc.developer-cc3.workers.dev",
         "authorization_endpoint": "https://discord-oidc.developer-cc3.workers.dev/authorize/guilds",
-        // "device_authorization_endpoint": "https://oauth2.googleapis.com/device/code",
         "token_endpoint": "https://discord-oidc.developer-cc3.workers.dev/token",
         "userinfo_endpoint": "https://discord-oidc.developer-cc3.workers.dev/userinfo",
-        // "userinfo_endpoint": "https://openidconnect.googleapis.com/v1/userinfo",
-        // "revocation_endpoint": "https://oauth2.googleapis.com/revoke",
         "jwks_uri": "https://discord-oidc.developer-cc3.workers.dev/jwks.json",
         "response_types_supported": [
             "code",
@@ -269,8 +284,6 @@ app.get('/.well-known/openid-configuration', async (c) => {
             // "none",
             "authorization_code",
             "refresh_token",
-            // "urn:ietf:params:oauth:grant-type:device_code",
-            // "urn:ietf:params:oauth:grant-type:jwt-bearer"
         ],
         "display_values_supported": [
             "page",
