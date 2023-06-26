@@ -132,7 +132,7 @@ app.post('/token', async (c) => {
     let iat = Math.floor(Date.now() / 1000)
 
     let claim = {
-        iss: 'https://discord-oidc.developer-cc3.workers.dev',
+        iss: config.issuerURL,
         aud: config.clientId,
         preferred_username: `${userInfo['username']}`,
         ...userInfo,
@@ -179,7 +179,6 @@ app.get('/userinfo', async (c) => {
 
     if (!userInfo['verified']) return c.text('Unauthorized.', 401)
 
-    // TODO: check if user is in guilds
     let servers = []
 
     const serverResp = await fetch('https://discord.com/api/users/@me/guilds', {
@@ -198,7 +197,7 @@ app.get('/userinfo', async (c) => {
     let iat = Math.floor(Date.now() / 1000)
 
     let claim = {
-        iss: 'https://discord-oidc.developer-cc3.workers.dev',
+        iss: config.issuerURL,
         aud: config.clientId,
         preferred_username: `${userInfo['username']}`,
         ...userInfo,
